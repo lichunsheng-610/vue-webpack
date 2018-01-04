@@ -2,14 +2,43 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import router from './router'
+import routes from './router/router'
+
+import VueRouter from 'vue-router';
+
+import jQuery from 'jquery';
+global.$ = global.jQuery = jQuery;
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.config.productionTip = false
 
-/* eslint-disable no-new */
+Vue.use(VueRouter)
+Vue.use(ElementUI)
+
+const router = new VueRouter({
+    routes
+})
+
+// router.beforeEach((to, from, next) => {
+//     if (to.path == '/login') {
+//         sessionStorage.removeItem('user');
+//     }
+//     let user = JSON.parse(sessionStorage.getItem('user'));
+//     if (!user && to.path != '/login') {
+//         next({
+//             path: '/login'
+//         })
+//     } else {
+//         next()
+//     }
+// })
+
 new Vue({
-  el: '#app',
-  router,
-  template: '<App/>',
-  components: { App }
+    el: '#app',
+    router,
+    template: '<App/>',
+    components: {
+        App
+    }
 })
