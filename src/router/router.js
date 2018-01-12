@@ -4,6 +4,7 @@ import table from '../components/table'
 import slider from '../components/slider'
 import transfer from '../components/transfer'
 import echarts from '../components/echarts'
+import form from '../components/form'
 import notFound from '../components/404'
 
 
@@ -53,6 +54,16 @@ let routes = [{
             path: '/echarts',
             component: echarts,
             name: 'echarts'
+        }]
+    },{
+        path: '/',
+        component: home,
+        name: 'demo-form',
+        iconCls: 'fa fa-weixin',
+        children: [{
+            path: '/form',
+            component: form,
+            name: 'form'
         }]
     },
     {

@@ -23,7 +23,6 @@ export default {
             data2: generateData2(),
             value2: [],
             filterMethod(query, item) {
-                console.log(query);
                 return item.pinyin.indexOf(query) > -1;
             }
         };
