@@ -20,63 +20,55 @@
         </div>
         <div class="select_panel">
             <p>select</p>
-            <el-select v-model="value1" filterable placeholder="请选择" :filter-method="select_filter">
-                <el-option v-for="item in options" :key="item.value" :label="item.name" :value="item.value"></el-option>
+            <el-select v-model="select_value" filterable placeholder="请选择" :filter-method="select_filter">
+                <el-option v-for="item in select_data" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
         </div>
-        <div class="">
-            <p></p>
-
+        <div class="cascader_panel">
+            <p>Cascader 级联选择器</p>
+            <el-cascader expand-trigger="hover" :options="cascader_data" v-model="cascader_select" @change="handleChange"></el-cascader>
+        </div>
+        <div class="datePicker_panel">
+            <p>DatePicker 日期选择器</p>
+            <el-date-picker v-model="datePicker_value" type="date" placeholder="选择日期"></el-date-picker>
         </div>
     </div>
 </template>
 
 <script>
 import ajax from '../services/ajaxService';
+import moment from 'moment';
+
 export default {
     data() {
         return {
             radio: "1",
             checkAll: false,
-            checkedCities: ['广州'],
-            cities: ['上海', '北京', '广州', '深圳'],
+            checkedCities: [],
+            cities: [],
             isIndeterminate: true,
             num1: "1",
             num2: "5",
-            options: [{
-                value: '选项1',
-                name: 'sssssss'
-            }, {
-                value: '选项2',
-                name: '双皮奶'
-            }, {
-                value: '选项3',
-                name: '蚵仔煎'
-            }, {
-                value: '选项4',
-                name: '龙须面'
-            }, {
-                value: '选项5',
-                name: '北京烤鸭'
-            }],
-            options_backup: [{
-                value: '选项1',
-                name: 'sssssss'
-            }, {
-                value: '选项2',
-                name: '双皮奶'
-            }, {
-                value: '选项3',
-                name: '蚵仔煎'
-            }, {
-                value: '选项4',
-                name: '龙须面'
-            }, {
-                value: '选项5',
-                name: '北京烤鸭'
-            }],
-            value1: ''
+            select_data: [],
+            select_data_backup: [],
+            select_value: '',
+            cascader_data: [],
+            cascader_select: [],
+            datePicker_value: moment().format("YYYY-MM-DD")
         }
+    },
+    created: function () {
+        let _this = this;
+        ajax({
+            url: "formData"
+        }).then(ret => {
+            console.log(ret.cities);
+            _this.cities = ret.cities;
+            _this.checkedCities = new Array(ret.cities[1]);
+            _this.select_data = ret.select_data;
+            _this.select_data_backup = ret.select_data;
+            _this.cascader_data = ret.cascader_data;
+        });
     },
     methods: {
         handleCheckAllChange(val) {
@@ -93,17 +85,17 @@ export default {
         },
         select_filter(val) {
             if (val) {
-                let arr_len = this.options_backup.length;
+                let arr_len = this.select_data_backup.length;
                 let ret_arr = [];
                 for (let i = 0; i < arr_len; i++) {
-                    if (val.length < this.options_backup[i].value.length && this.options_backup[i].value.indexOf(val) > -1)//需要判断输入值的长度是否大于被判断值，如果大于的话会报错
-                        ret_arr.push(this.options_backup[i]);
-                    if (val.length < this.options_backup[i].name.length && this.options_backup[i].name.indexOf(val) > -1)
-                        ret_arr.push(this.options_backup[i]);
+                    if (val.length < this.select_data_backup[i].value.length && this.select_data_backup[i].value.indexOf(val) > -1)//需要判断输入值的长度是否大于被判断值，如果大于的话会报错
+                        ret_arr.push(this.select_data_backup[i]);
+                    if (val.length < this.select_data_backup[i].label.length && this.select_data_backup[i].label.indexOf(val) > -1)
+                        ret_arr.push(this.select_data_backup[i]);
                 }
-                this.options = ret_arr;
+                this.select_data = ret_arr;
             } else {
-                this.options = this.options_backup;
+                this.select_data = this.select_data_backup;
             }
         }
     }

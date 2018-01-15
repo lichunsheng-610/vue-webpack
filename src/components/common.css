@@ -1,0 +1,4 @@
+.el-menu-item i,
+.el-submenu__title i {
+    margin-right: 5px;
+}
