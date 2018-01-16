@@ -32,6 +32,14 @@
             <p>DatePicker 日期选择器</p>
             <el-date-picker v-model="datePicker_value" type="date" placeholder="选择日期"></el-date-picker>
         </div>
+        <div class="rate_panel">
+            <p>Rate 评分</p>
+            <el-rate v-model="rate_value" show-text :allow-half="true"></el-rate>
+        </div>
+        <div class="colorPicker_panel">
+            <p>ColorPicker 颜色选择器</p>
+            <el-color-picker v-model="colorPicker_color" show-alpha></el-color-picker>
+        </div>
     </div>
 </template>
 
@@ -54,7 +62,9 @@ export default {
             select_value: '',
             cascader_data: [],
             cascader_select: [],
-            datePicker_value: moment().format("YYYY-MM-DD")
+            datePicker_value: moment().format("YYYY-MM-DD"),
+            rate_value: 3.8,
+            colorPicker_color: '#409EFF'
         }
     },
     created: function () {
@@ -62,7 +72,6 @@ export default {
         ajax({
             url: "formData"
         }).then(ret => {
-            console.log(ret.cities);
             _this.cities = ret.cities;
             _this.checkedCities = new Array(ret.cities[1]);
             _this.select_data = ret.select_data;

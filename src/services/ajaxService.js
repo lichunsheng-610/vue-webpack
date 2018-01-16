@@ -26,7 +26,29 @@ Mock.mock("formData", {
                 "label": "@ctitle" //模拟文本
             }]
         }]
-    }]
+    }],
+    "tagsData": [{
+            name: '标签一',
+            type: ''
+        },
+        {
+            name: '标签二',
+            type: 'success'
+        },
+        {
+            name: '标签三',
+            type: 'info'
+        },
+        {
+            name: '标签四',
+            type: 'warning'
+        },
+        {
+            name: '标签五',
+            type: 'danger'
+        }
+    ],
+    "progress|5": ["@integer(10,100)"]
 })
 
 export default function (options) {
