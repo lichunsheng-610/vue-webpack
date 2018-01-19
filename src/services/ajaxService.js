@@ -48,7 +48,9 @@ Mock.mock("formData", {
             type: 'danger'
         }
     ],
-    "progress|5": ["@integer(10,100)"]
+    "progress|5": ["@integer(10,100)"],
+    "badge_value|3": ["@integer(10,100)"]
+
 })
 
 export default function (options) {

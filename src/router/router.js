@@ -6,6 +6,8 @@ import transfer from '../components/transfer'
 import echarts from '../components/echarts'
 import form from '../components/form'
 import data from '../components/data'
+import qrCode from '../components/qrCode'
+import video from '../components/video'
 import notFound from '../components/404'
 
 
@@ -56,7 +58,7 @@ let routes = [{
             component: echarts,
             name: 'echarts'
         }]
-    },{
+    }, {
         path: '/',
         component: home,
         name: 'demo-model',
@@ -65,10 +67,18 @@ let routes = [{
             path: '/form',
             component: form,
             name: 'form'
-        },{
+        }, {
             path: '/data',
             component: data,
             name: 'data'
+        }, {
+            path: '/qrCode',
+            component: qrCode,
+            name: 'qrCode'
+        }, {
+            path: '/video',
+            component: video,
+            name: 'video'
         }]
     },
     {

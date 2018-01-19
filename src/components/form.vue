@@ -97,9 +97,7 @@ export default {
                 let arr_len = this.select_data_backup.length;
                 let ret_arr = [];
                 for (let i = 0; i < arr_len; i++) {
-                    if (val.length < this.select_data_backup[i].value.length && this.select_data_backup[i].value.indexOf(val) > -1)//需要判断输入值的长度是否大于被判断值，如果大于的话会报错
-                        ret_arr.push(this.select_data_backup[i]);
-                    if (val.length < this.select_data_backup[i].label.length && this.select_data_backup[i].label.indexOf(val) > -1)
+                    if (val.length <= this.select_data_backup[i].label.length && this.select_data_backup[i].label.indexOf(val) > -1)
                         ret_arr.push(this.select_data_backup[i]);
                 }
                 this.select_data = ret_arr;
