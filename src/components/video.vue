@@ -7,27 +7,41 @@
 </template>
 
 <script>
-import videojs from 'video.js';
+import 'video.js/dist/lang/zh-CN';
 import 'video.js/dist/video-js.css';
 
+let my_player;
 export default {
     data() {
         return {
             url: "http://vjs.zencdn.net/v/oceans.mp4"
         }
     },
-    created() {
-        videojs("my-video", {
+    mounted() {
+        my_player = videojs("my-video", {
             "controls": true,
             "autoplay": true,
-            "preload": "auto"
+            "preload": "auto",
+            "loop": true
         });
+    },
+    destroyed() {
+        my_player.dispose();
     },
     methods: {
 
     }
 };
+
 </script>
 <style>
+.video_panel {
+  width: 960px;
+  height: 400px;
+}
 
+.video-js {
+  width: 100%;
+  height: 100%;
+}
 </style>

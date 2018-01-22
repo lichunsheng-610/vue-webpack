@@ -49,8 +49,8 @@ export default {
 .qrCode_panel {
   width: 500px;
 }
-.el-input,
-.el-button {
+.qrCode_panel .el-input,
+.qrCode_panel .el-button {
   margin-top: 20px;
 }
 </style>
