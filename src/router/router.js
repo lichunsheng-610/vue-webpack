@@ -1,3 +1,4 @@
+import login from '../components/login'
 import HelloWorld from '../components/helloWorld'
 import home from '../components/home'
 import table from '../components/table'
@@ -12,6 +13,17 @@ import notFound from '../components/404'
 
 
 let routes = [{
+        path: '/login',
+        component: login,
+        name: '',
+        hidden: true
+    },
+    {
+        path: '/404',
+        component: notFound,
+        name: '',
+        hidden: true
+    }, {
         path: '/',
         component: home,
         name: '',
@@ -41,12 +53,6 @@ let routes = [{
             component: transfer,
             name: 'demo-transfer'
         }]
-    },
-    {
-        path: '/404',
-        component: notFound,
-        name: '',
-        hidden: true
     },
     {
         path: '/',

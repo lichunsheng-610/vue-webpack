@@ -1,5 +1,18 @@
 <template slot="title">
-    <div>
+    <div class="home">
+        <div class="header_panel">
+            <el-dropdown trigger="hover">
+                <span class="el-dropdown-link userinfo-inner">
+                    <span>{{uesrName}}</span>
+                    <img :src="userImg" />
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click.native="myInfo">我的消息</el-dropdown-item>
+                    <el-dropdown-item @click.native="setting">设置</el-dropdown-item>
+                    <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
         <aside class="menu-panel">
             <el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" unique-opened router>
                 <template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">
@@ -24,37 +37,105 @@
 </template>
 
 <style>
+.header_panel {
+  z-index: 2;
+  width: 100%;
+  height: 60px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #409eff;
+}
+.header_panel .el-dropdown {
+  float: right;
+  width: 150px;
+  height: 60px;
+  line-height: 60px;
+}
+.header_panel .el-dropdown-link span {
+  display: block;
+  float: left;
+  height: 60px;
+  line-height: 60px;
+  margin-right: 10px;
+  color: #fff;
+}
+.header_panel img {
+  width: 40px;
+  margin-top: 5px;
+  border-radius: 20px;
+}
 .menu-panel {
+  z-index: 1;
   position: absolute;
   left: 0;
   top: 0;
   height: 100%;
+  min-height: 660px;
+  border-right: 1px solid #e6e6e6;
 }
 .content-container {
   position: absolute;
   left: 200px;
   width: 80%;
-  top: 0;
+  top: 60px;
   padding: 20px;
 }
+.home .el-menu {
+  border: 0;
+}
 .el-menu-vertical-demo {
-  height: 100%;
+  margin-top: 60px;
   width: 200px;
 }
-
 </style>
 
 <script>
 import ajax from '../services/ajaxService'
+import storage from '../services/storageService'
 
 export default {
     data() {
         return {
+            uesrName: "",
+            userImg: "../../static/file/userImg.jpg",
             isCollapse: true
         };
     },
-    created() { },
+    created() {
+        this.uesrName = storage.getItem("userLoginInfo").account;
+    },
     methods: {
+        myInfo() {
+            this.$confirm('我是消息', '提示', {
+                //type: 'warning'
+            }).then(() => {
+            }).catch(() => {
+
+            });
+        },
+        setting() {
+            this.$confirm('我是设置', '提示', {
+                //type: 'warning'
+            }).then(() => {
+            }).catch(() => {
+
+            });
+        },
+        logout() {
+            var _this = this;
+            this.$confirm('确认退出吗?', '提示', {
+                //type: 'warning'
+            }).then(() => {
+                storage.removeItem('userLoginInfo');
+                setTimeout(function () {
+                    _this.$router.push('/login');
+                }, 200);
+            }).catch(() => {
+
+            });
+
+        },
         handleopen(key, keyPath) {
             //console.log('handleopen');
         },

@@ -1,6 +1,25 @@
 import Mock from "mockjs";
 // global.Mock = Mock;
 
+Mock.mock("login", function (options) {
+    let return_data = {};
+    let userInfo = options.body.split("&");
+    let account = userInfo[0].split("=")[1];
+    let password = userInfo[1].split("=")[1];
+    if (account == "admin" && password == "111111")
+        return_data = {
+            code: 200,
+            msg: "登录成功"
+        }
+    else
+        return_data = {
+            code: 1500,
+            msg: "密码有误"
+        }
+
+    return return_data;
+})
+
 Mock.mock("table_list", {
     "data|20-100": [{
         "name": "@cname", //模拟名称
@@ -55,6 +74,7 @@ Mock.mock("formData", {
 
 export default function (options) {
     const defaultOptions = {
+        type: options.type,
         dataType: "json",
         cache: true,
         jsonp: "callback"

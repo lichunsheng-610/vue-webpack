@@ -13,6 +13,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import './components/common.css'
 
+import storage from '../src/services/storageService';
+
 Vue.config.productionTip = false
 
 Vue.use(VueRouter)
@@ -23,12 +25,20 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    if (to.path == '/') {
+    if (to.path == '/login') {
+        storage.removeItem("userLoginInfo");
+    }
+    if (!storage.getItem("userLoginInfo") && to.path != '/login') {
         next({
-            path: '/helloWorld'
+            path: '/login'
         });
     } else {
-        next();
+        if (to.path == "/")
+            next({
+                path: '/helloWorld'
+            });
+        else
+            next();
     }
 })
 

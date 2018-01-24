@@ -14,7 +14,7 @@ let my_player;
 export default {
     data() {
         return {
-            url: "http://vjs.zencdn.net/v/oceans.mp4"
+            url: "../../static/file/oceans.mp4"
         }
     },
     mounted() {
