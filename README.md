@@ -1,6 +1,6 @@
 # vue-pro
 
-> A Vue.js project
+> A Vue.js project          
 
 > vue + vue-router + webpack + element-ui
 
