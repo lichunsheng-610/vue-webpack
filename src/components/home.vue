@@ -38,55 +38,55 @@
 
 <style>
 .header_panel {
-  z-index: 2;
-  width: 100%;
-  height: 60px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  background-color: #409eff;
+    z-index: 2;
+    width: 100%;
+    height: 60px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: #409eff;
 }
 .header_panel .el-dropdown {
-  float: right;
-  width: 150px;
-  height: 60px;
-  line-height: 60px;
+    float: right;
+    width: 150px;
+    height: 60px;
+    line-height: 60px;
 }
 .header_panel .el-dropdown-link span {
-  display: block;
-  float: left;
-  height: 60px;
-  line-height: 60px;
-  margin-right: 10px;
-  color: #fff;
+    display: block;
+    float: left;
+    height: 60px;
+    line-height: 60px;
+    margin-right: 10px;
+    color: #fff;
 }
 .header_panel img {
-  width: 40px;
-  margin-top: 5px;
-  border-radius: 20px;
+    width: 40px;
+    margin-top: 5px;
+    border-radius: 20px;
 }
 .menu-panel {
-  z-index: 1;
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  min-height: 660px;
-  border-right: 1px solid #e6e6e6;
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    min-height: 660px;
+    border-right: 1px solid #e6e6e6;
 }
 .content-container {
-  position: absolute;
-  left: 200px;
-  width: 80%;
-  top: 60px;
-  padding: 20px;
+    position: absolute;
+    left: 200px;
+    width: 80%;
+    top: 60px;
+    padding: 20px;
 }
 .home .el-menu {
-  border: 0;
+    border: 0;
 }
-.el-menu-vertical-demo {
-  margin-top: 60px;
-  width: 200px;
+.home .el-menu-vertical-demo {
+    margin-top: 60px !important;
+    width: 200px;
 }
 </style>
 
@@ -127,7 +127,7 @@ export default {
             this.$confirm('确认退出吗?', '提示', {
                 //type: 'warning'
             }).then(() => {
-                storage.removeItem('userLoginInfo');
+                storage.clearAll();
                 setTimeout(function () {
                     _this.$router.push('/login');
                 }, 200);

@@ -45,7 +45,6 @@
 
 <script>
 import ajax from '../services/ajaxService';
-import moment from 'moment';
 
 export default {
     data() {
@@ -110,7 +109,7 @@ export default {
 </script>
 <style scoped>
 p {
-  font-size: 18px;
-  font-weight: bold;
+    font-size: 18px;
+    font-weight: bold;
 }
 </style>

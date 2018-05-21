@@ -48,6 +48,11 @@ export default {
     destroyed() {
     },
     methods: {
+        //获取当前时间戳
+        getTimestamp() {
+            return Math.round(new Date().getTime());
+            //getTime()返回数值的单位是毫秒
+        },
         handleReset2() {
             this.$refs.formData.resetFields();
         },
@@ -74,8 +79,9 @@ export default {
                     setTimeout(function () {
                         storage.setItem("userLoginInfo", {
                             account: _this.formData.account,
-                            password: _this.formData.password
-                        }, 1);
+                            password: _this.formData.password,
+                            curTimestamp: _this.getTimestamp()
+                        }, configService.login_deadline);
                         _this.$router.push({ path: '/helloWorld' });
                     }, 500)
                 }
@@ -93,19 +99,19 @@ export default {
 </script>
 <style>
 .login_panel {
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  -moz-border-radius: 5px;
-  background-clip: padding-box;
-  margin: 180px auto;
-  width: 350px;
-  padding: 35px 35px 15px 35px;
-  background: #fff;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 0 25px #cac6c6;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    background-clip: padding-box;
+    margin: 180px auto;
+    width: 350px;
+    padding: 35px 35px 15px 35px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 0 25px #cac6c6;
 }
 
 .login_panel .el-checkbox {
-  margin-bottom: 22px;
+    margin-bottom: 22px;
 }
 </style>
