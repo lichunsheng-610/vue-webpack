@@ -103,7 +103,8 @@ export default {
         };
     },
     created() {
-        this.uesrName = storage.getItem("userLoginInfo").account;
+        // this.uesrName = storage.getItem("userLoginInfo").account;
+        this.uesrName = storage.getItem("userLoginInfo") ? storage.getItem("userLoginInfo").account : "";
     },
     methods: {
         myInfo() {
