@@ -202,8 +202,8 @@ export default {
 
 <style scoped>
 .chart-container {
-  width: 100%;
-  float: left;
+    width: 100%;
+    float: left;
 }
 /*.chart div {
         height: 400px;
@@ -211,6 +211,6 @@ export default {
     }*/
 
 .el-col {
-  padding: 30px 20px;
+    padding: 30px 20px;
 }
 </style>

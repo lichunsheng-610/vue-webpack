@@ -36,12 +36,12 @@ export default {
 </script>
 <style>
 .video_panel {
-  width: 960px;
-  height: 400px;
+    width: 960px;
+    height: 400px;
 }
 
 .video-js {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 </style>

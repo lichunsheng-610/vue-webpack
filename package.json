@@ -7,6 +7,7 @@
     "scripts": {
         "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
         "build": "rimraf dist && node build/build.js && build_copy.bat",
+        "clean": "rimraf dist && rimraf npm-debug.log",
         "start": "npm run dev",
         "unit": "jest --config test/unit/jest.conf.js --coverage",
         "e2e": "node test/e2e/runner.js",

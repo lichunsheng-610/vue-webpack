@@ -79,17 +79,17 @@ export default {
 </script>
 <style>
 .regexpitem {
-  width: 100%;
-  height: 40px;
-  margin-bottom: 20px;
+    width: 100%;
+    height: 40px;
+    margin-bottom: 20px;
 }
 .regexpitem .el-input {
-  width: 388px;
-  float: left;
+    width: 388px;
+    float: left;
 }
 
 .regexpitem .el-button {
-  float: left;
-  margin-left: 10px;
+    float: left;
+    margin-left: 10px;
 }
 </style>

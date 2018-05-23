@@ -42,92 +42,91 @@
 </template>
 
 <script>
-    import ajax from '../services/ajaxService';
-    export default {
-        data() {
-            return {
-                tagsData: [],
-                progress: [],
-                badge_value: []
-            }
+import ajax from '../services/ajaxService';
+export default {
+    data() {
+        return {
+            tagsData: [],
+            progress: [],
+            badge_value: []
+        }
+    },
+    created() {
+        this.getData();
+    },
+    methods: {
+        getData() {
+            let _this = this;
+            ajax({
+                url: "formData"
+            }).then(ret => {
+                _this.tagsData = ret.tagsData;
+                _this.progress = ret.progress;
+                _this.badge_value = ret.badge_value;
+            });
         },
-        created() {
-            this.getData();
+        handleClose(tag) {
+            this.tagsData.splice(this.tagsData.indexOf(tag), 1);
         },
-        methods: {
-            getData() {
-                let _this = this;
-                ajax({
-                    url: "formData"
-                }).then(ret => {
-                    _this.tagsData = ret.tagsData;
-                    _this.progress = ret.progress;
-                    _this.badge_value = ret.badge_value;
-                });
-            },
-            handleClose(tag) {
-                this.tagsData.splice(this.tagsData.indexOf(tag), 1);
-            },
-            handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
-            },
-            handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
-            },
-            open_info() {
-                this.$message({
-                    showClose: true,
-                    message: '这是一条消息提示'
-                });
-            },
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+        },
+        open_info() {
+            this.$message({
+                showClose: true,
+                message: '这是一条消息提示'
+            });
+        },
 
-            open_success() {
-                this.$message({
-                    showClose: true,
-                    message: '恭喜你，这是一条成功消息',
-                    type: 'success'
-                });
-            },
+        open_success() {
+            this.$message({
+                showClose: true,
+                message: '恭喜你，这是一条成功消息',
+                type: 'success'
+            });
+        },
 
-            open_warn() {
-                this.$message({
-                    showClose: true,
-                    message: '警告哦，这是一条警告消息',
-                    type: 'warning'
-                });
-            },
+        open_warn() {
+            this.$message({
+                showClose: true,
+                message: '警告哦，这是一条警告消息',
+                type: 'warning'
+            });
+        },
 
-            open_error() {
-                this.$message({
-                    showClose: true,
-                    message: '错了哦，这是一条错误消息',
-                    type: 'error'
-                });
-            }
+        open_error() {
+            this.$message({
+                showClose: true,
+                message: '错了哦，这是一条错误消息',
+                type: 'error'
+            });
         }
     }
+}
 
 </script>
 <style>
-    .reload {
-        width: 98px;
-        height: 40px;
-        position: absolute;
-        left: 600px;
-        top: 20px;
-    }
+.reload {
+    width: 98px;
+    height: 40px;
+    position: absolute;
+    left: 600px;
+    top: 20px;
+}
 
-    .el-tag {
-        margin: 0 5px;
-    }
+.el-tag {
+    margin: 0 5px;
+}
 
-    .el-progress--line {
-        width: 500px;
-        margin: 10px 0;
-    }
+.el-progress--line {
+    width: 500px;
+    margin: 10px 0;
+}
 
-    .badge_item {
-        margin-right: 50px;
-    }
-
+.badge_item {
+    margin-right: 50px;
+}
 </style>

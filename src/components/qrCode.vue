@@ -47,10 +47,10 @@ export default {
 </script>
 <style>
 .qrCode_panel {
-  width: 500px;
+    width: 500px;
 }
 .qrCode_panel .el-input,
 .qrCode_panel .el-button {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 </style>
