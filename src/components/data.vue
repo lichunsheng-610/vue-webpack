@@ -42,14 +42,14 @@
 </template>
 
 <script>
-import ajax from '../services/ajaxService';
+import ajax from "../services/ajaxService";
 export default {
     data() {
         return {
             tagsData: [],
             progress: [],
             badge_value: []
-        }
+        };
     },
     created() {
         this.getData();
@@ -69,44 +69,43 @@ export default {
             this.tagsData.splice(this.tagsData.indexOf(tag), 1);
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+            // console.log(`每页 ${val} 条`);
         },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            // console.log(`当前页: ${val}`);
         },
         open_info() {
             this.$message({
                 showClose: true,
-                message: '这是一条消息提示'
+                message: "这是一条消息提示"
             });
         },
 
         open_success() {
             this.$message({
                 showClose: true,
-                message: '恭喜你，这是一条成功消息',
-                type: 'success'
+                message: "恭喜你，这是一条成功消息",
+                type: "success"
             });
         },
 
         open_warn() {
             this.$message({
                 showClose: true,
-                message: '警告哦，这是一条警告消息',
-                type: 'warning'
+                message: "警告哦，这是一条警告消息",
+                type: "warning"
             });
         },
 
         open_error() {
             this.$message({
                 showClose: true,
-                message: '错了哦，这是一条错误消息',
-                type: 'error'
+                message: "错了哦，这是一条错误消息",
+                type: "error"
             });
         }
     }
-}
-
+};
 </script>
 <style>
 .reload {

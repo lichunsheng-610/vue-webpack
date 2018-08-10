@@ -89,7 +89,7 @@ export default {
             this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
         },
         handleChange(val) {
-            console.log(val);
+            // console.log(val);
         },
         select_filter(val) {
             if (val) {
