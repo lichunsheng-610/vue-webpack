@@ -47,6 +47,16 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         quiet: true, // necessary for FriendlyErrorsPlugin
         watchOptions: {
             poll: config.dev.poll,
+        },
+
+        //配置nodejs服务器，用于连接mysql数据库
+        contentBase: __dirname + "/",
+        port: 8088,
+        proxy: {
+            "/api": { //需要代理的路径
+                target: "http://127.0.0.1:8088", //需要代理的域名
+                changeOrigin: true //必须配置为true，才能正确代理
+            }
         }
     },
     plugins: [

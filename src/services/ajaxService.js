@@ -81,12 +81,59 @@ export default function (options) {
     };
 
     // options.url = options.url;
+    options.data = processRequest(options);
     options.headers = {
         "Accept": "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json;charset=utf-8"
     };
 
-    return $.ajax({ ...defaultOptions,
+    return $.ajax({
+        ...defaultOptions,
         ...options
-    }).then();
+    }).then(processResponse);
 };
+
+
+// 标准化传给后台的参数
+function processRequest(r) {
+    const str = r.data || {};
+    if ('get' == r.method) {
+        if ($.isEmptyObject(str) || null == str) {
+            return {
+                t: new Date().getTime()
+            };
+        } else {
+            return {
+                //添加时间戳随机数
+                params: JSON.stringify(str),
+                t: new Date().getTime()
+            };
+        }
+    } else {
+        return JSON.stringify(str);
+    }
+}
+
+// 标准化后台相应数据格式
+function processResponse(r) {
+    let str = {};
+    if (r.rows) {
+        str = r;
+        str.code = 0;
+        str.list = r.rows;
+        delete str.rows;
+    } else {
+        if (!r.error) {
+            if (0 <= r.code) {
+                str = r;
+            } else {
+                str.code = 0;
+                str.data = r;
+            }
+        } else {
+            str.code = -1;
+            str.message = r.message || r.error;
+        }
+    }
+    return str;
+}

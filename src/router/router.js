@@ -1,5 +1,6 @@
 import login from '../components/login'
 import HelloWorld from '../components/helloWorld'
+import nodeJsTest from '../components/nodeJsTest'
 import home from '../components/home'
 import table from '../components/table'
 import slider from '../components/slider'
@@ -34,6 +35,17 @@ let routes = [{
             path: '/helloWorld',
             component: HelloWorld,
             name: 'hello-world'
+        }]
+    }, {
+        path: '/',
+        component: home,
+        name: '',
+        iconCls: 'fa fa-ravelry',
+        leaf: true, //只有一个节点
+        children: [{
+            path: '/nodeJsTest',
+            component: nodeJsTest,
+            name: 'nodeJs-test'
         }]
     },
     {

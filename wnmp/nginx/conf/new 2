@@ -1,0 +1,19 @@
+		
+		location /target/ { #wxga
+				alias "E:/gmvcs/trunk-wxga/zap_flexmanage/gmvcs/target/";
+		}
+		
+		location /gmvcs-debug/ { #2.1
+				
+				alias "E:/gmvcs/trunk-2.1/zap_flexmanage/gmvcs/gmvcs-debug/";
+		}
+		
+		location /gmvcs2.1-shjgj/ { #jgj
+				
+				alias "F:/wnmp/www/gmvcs2.1-shjgj";
+		}
+		
+		location /bin-debug/ { #3.0
+				
+				alias "E:/gmvcs/trunk-3.0/zap_flexmanage/gmvcs3.0/bin-debug/";
+		}

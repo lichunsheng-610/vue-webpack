@@ -9,6 +9,9 @@ import VueRouter from 'vue-router';
 import jQuery from 'jquery';
 global.$ = global.jQuery = jQuery;
 
+import ajax from './services/ajaxService';
+global.$ajax = ajax;
+
 import moment from 'moment';
 global.moment = moment;
 
