@@ -73,6 +73,10 @@
                     return;
                 }
 
+                setTimeout(function () {
+                    _this.logining = false;
+                }, 10000);
+
                 $ajax({
                     url: "/api/user/login",
                     type: "post",

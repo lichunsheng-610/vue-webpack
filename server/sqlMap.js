@@ -1,11 +1,10 @@
 // sql语句
 
-var sqlMap = {
+let sqlMap = {
     // 用户
     user: {
-        add: 'insert into user(id, name, age) values (0, ?, ?)',
-        check: 'select * from loginname',
-        loginCheck: 'select * from usersTable where account = ?',
+        check: 'select * from userInfo',
+        loginCheck: 'select * from userInfo',
     }
 }
 

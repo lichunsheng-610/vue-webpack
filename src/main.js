@@ -49,7 +49,7 @@ router.beforeEach((to, from, next) => {
             });
         else {
             if (storage.getItem("userLoginInfo")) {
-                var time = Math.round(new Date().getTime()) - storage.getItem("userLoginInfo").curTimestamp;
+                let time = Math.round(new Date().getTime()) - storage.getItem("userLoginInfo").curTimestamp;
                 if (time > configService.login_deadline * 3600000) { //3600000为一小时对应的毫秒数，登录超过一小时之后，需要重新登录
                     storage.clearAll();
                     setTimeout(function () {
