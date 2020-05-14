@@ -5,6 +5,6 @@ module.exports = {
         user: 'root',
         password: '111111', //mySql用户名密码
         database: 'vueData',
-        port: '3306' //mysql连接端口
+        port: '3306', //mysql连接端口
     }
 }

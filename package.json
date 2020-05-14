@@ -9,7 +9,7 @@
     "build": "rimraf dist && node build/build.js",
     "pub": "rimraf dist && node build/build.js && build_copy.bat",
     "clean": "rimraf dist && rimraf npm-debug.log",
-    "server": "node server/index",
+    "server": "nodemon server/index",
     "start": "npm run dev",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "node test/e2e/runner.js",
@@ -45,6 +45,7 @@
     "babel-preset-env": "^1.3.2",
     "babel-preset-stage-2": "^6.22.0",
     "babel-register": "^6.22.0",
+    "bignumber.js": "4.1.0",
     "chalk": "^2.0.1",
     "chromedriver": "^2.27.2",
     "copy-webpack-plugin": "^4.0.1",
@@ -59,7 +60,7 @@
     "eslint-plugin-node": "^5.2.0",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^3.0.1",
-    "extract-text-webpack-plugin": "^3.0.0",
+    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
     "generate-asset-webpack-plugin": "^0.3.0",
@@ -67,6 +68,7 @@
     "jest": "^21.2.0",
     "jest-serializer-vue": "^0.3.0",
     "mockjs": "^1.0.1-beta3",
+    "mysql": "^2.16.0",
     "nightwatch": "^0.9.12",
     "node-notifier": "^5.1.2",
     "open-browser-webpack-plugin": "0.0.5",
@@ -76,10 +78,13 @@
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.8",
     "postcss-url": "^7.2.1",
+    "readable-stream": "^2.3.6",
     "rimraf": "^2.6.0",
+    "safe-buffer": "^5.1.2",
     "selenium-server": "^3.0.1",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",
+    "sqlstring": "^2.3.1",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
     "vue-jest": "^1.0.2",
@@ -90,12 +95,7 @@
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
-    "webpack-merge": "^4.1.0",
-    "mysql": "^2.16.0",
-    "bignumber.js": "4.1.0",
-    "readable-stream": "^2.3.6",
-    "safe-buffer": "^5.1.2",
-    "sqlstring": "^2.3.1"
+    "webpack-merge": "^4.1.0"
   },
   "engines": {
     "node": ">= 6.0.0",
@@ -105,5 +105,20 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "main": ".eslintrc.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lichunsheng-610/vue-webpack.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lichunsheng-610/vue-webpack/issues"
+  },
+  "homepage": "https://github.com/lichunsheng-610/vue-webpack#readme"
 }

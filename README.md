@@ -16,6 +16,11 @@ npm run dev
 ###### --------会执行删除原有的dist文件夹，webpack打包好后会自动出包到指定位置（需要配置build_copy.bat）
 npm run build
 
+###### node热启动插件nodemon
+安装插件 npm install -g nodemon
+###### 运行nodejs后台服务，可以热启动
+npm run sever
+
 
 - ==2019-3-25 14:40:49==
 
