@@ -6,7 +6,7 @@
     "private": true,
     "scripts": {
         "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-        "build": "rimraf dist && node build/build.js && build_copy.bat",
+        "build": "rimraf dist && node build/build.js",
         "clean": "rimraf dist && rimraf npm-debug.log",
         "start": "npm run dev",
         "unit": "jest --config test/unit/jest.conf.js --coverage",
@@ -21,6 +21,7 @@
         "font-awesome": "^4.7.0",
         "jquery": "^3.2.1",
         "moment": "^2.20.1",
+        "socket.io-client": "^3.0.4",
         "video.js": "^6.6.0",
         "vue": "^2.5.2",
         "vue-router": "^3.0.1",

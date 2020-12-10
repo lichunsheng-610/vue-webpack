@@ -82,7 +82,7 @@ export default {
                             password: _this.formData.password,
                             curTimestamp: _this.getTimestamp()
                         }, configService.login_deadline);
-                        _this.$router.push({ path: '/helloWorld' });
+                        _this.$router.push({ path: '/webRTC' });
                     }, 500)
                 }
                 else {

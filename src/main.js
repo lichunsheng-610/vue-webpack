@@ -26,6 +26,7 @@ Vue.config.productionTip = false;
 Vue.use(VueResource);
 Vue.use(VueRouter);
 Vue.use(ElementUI);
+// Vue.use(io);
 
 const router = new VueRouter({
     routes
@@ -42,7 +43,7 @@ router.beforeEach((to, from, next) => {
     } else {
         if (to.path == "/")
             next({
-                path: '/helloWorld'
+                path: '/webRTC'
             });
         else {
             if (storage.getItem("userLoginInfo")) {
