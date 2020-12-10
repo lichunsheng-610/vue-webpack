@@ -31,6 +31,8 @@ import myWebsocket from './myWebsocket';
 // GSRTC对象
 class GSRTC {
     constructor(options) {
+        this.eventListeningPool = {};
+
         // this._websocket = new myWebsocket("ws://123.207.136.134:9010/ajaxchattest");
         // this._websocket.open();
     }
@@ -52,6 +54,9 @@ class GSRTC {
 
     Uninit() {
         this._websocket = null;
+        this.cameraId = null;
+        this.microphoneId = null;
+        this.eventListeningPool = {};
     }
 
     /**
@@ -202,7 +207,40 @@ class GSRTC {
      * @return {Object} { state, data } state: GSRTCReturnCode, data: 返回音量信息或获取失败信息
      */
 
-    GetMicrophoneVolume() {}
+    GetMicrophoneVolume() {
+        let that = this;
+        // return new Promise((resolve, reject) => {
+        navigator.mediaDevices.getUserMedia({
+            audio: true
+        }).then((stream) => {
+            console.log(stream.getTracks());
+            let audioContext = new AudioContext();
+            // 将麦克风的声音输入这个对象
+            let mediaStreamSource = audioContext.createMediaStreamSource(stream);
+            // 创建一个音频分析对象，采样的缓冲区大小为4096，输入和输出都是单声道
+            let scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+            // 将该分析对象与麦克风音频进行连接
+            mediaStreamSource.connect(scriptProcessor);
+            // 此举无甚效果，仅仅是因为解决 Chrome 自身的 bug
+            scriptProcessor.connect(audioContext.destination);
+            // 开始处理音频
+            scriptProcessor.onaudioprocess = function (e) {
+                // 获得缓冲区的输入音频，转换为包含了PCM通道数据的32位浮点数组
+                let buffer = e.inputBuffer.getChannelData(0);
+                // 获取缓冲区中最大的音量值
+                let maxVal = Math.max.apply(Math, buffer);
+                // 显示音量值
+                let volume = Math.round(maxVal * 100);
+                // console.log(volume);
+                that.eventListeningPool["getMicrophoneVolume"](volume);
+                // resolve(volume);
+            };
+        }).catch((error) => {
+            // console.log('获取音频时好像出了点问题。' + error);
+            // reject(error);
+        });
+        // });
+    }
 
     /**
      * 设置麦克风音量
@@ -244,19 +282,34 @@ class GSRTC {
             constraints[type] = true;
 
             // enumerateDevices无法直接获取设备列表，需要getUserMedia获取浏览器使用设备权限，才能拿到设备列表
-            navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-                navigator.mediaDevices.enumerateDevices().then((deviceInfos) => {
+            navigator.mediaDevices.getUserMedia(constraints).then((mediaStream) => {
+                navigator.mediaDevices.enumerateDevices().then((ret) => {
                     /**
                      * 以下情况均会进入success
                      * 1. 浏览器弹窗提示用户给予使用媒体输入的许可时，选择允许
                      * 2. 摄像头/麦克风正常使用
                      */
+                    // console.log(mediaStream.getTracks());
+                    mediaStream.getTracks().forEach(element => {
+                        // 停止getUserMedia获取到的流媒体
+                        element.stop();
+                    });
+                    let deviceInfos = ret.filter((item) => item.kind === `${type}input`);
+                    // console.log(deviceInfos[0].deviceId);
+                    // let test = {
+                    //     audio: {
+                    //         deviceId: deviceInfos[0].deviceId
+                    //     }
+                    // }
+                    // navigator.mediaDevices.getUserMedia(test).then((stream) => {
+                    //     console.log(stream.getTracks());
+                    // });
                     resolve({
-                        deviceInfos
+                        code: 0,
+                        data: deviceInfos
                     });
                 });
-            }).catch((error) => {
-                console.log("error");
+            }).catch((data) => {
                 /**
                  * 以下情况均会进入error
                  * 1. 浏览器弹窗提示用户给予使用媒体输入的许可时，选择禁止
@@ -265,7 +318,7 @@ class GSRTC {
                 let code = (type == "video" ? 1019 : 1021);
                 reject({
                     code,
-                    error,
+                    data,
                 });
             });
         });
@@ -278,15 +331,9 @@ class GSRTC {
      * @return {Number} GSRTCReturnCode
      */
 
-    SetCamera(cameraId) {}
-
-    /**
-     * 获取麦克风列表
-     * @method GetMicrophoneList
-     * @return {Object} { state, data } state: GSRTCReturnCode, data: 返回麦克风列表或获取失败信息
-     */
-
-    GetMicrophoneList() {}
+    SetCamera(cameraId) {
+        this.cameraId = cameraId;
+    }
 
     /**
      * 根据获取的麦克风列表，确定使用哪个麦克风
@@ -295,7 +342,9 @@ class GSRTC {
      * @return {Number} GSRTCReturnCode
      */
 
-    SetMicrophone(microphoneId) {}
+    SetMicrophone(microphoneId) {
+        this.microphoneId = microphoneId;
+    }
 
     /* ------------------------------ GSRTC消息回调 ------------------------------ */
     /**
@@ -409,6 +458,21 @@ class GSRTC {
 
     OnSpeakerCtrl(meetingId) {}
 
+    /**
+     * 用户注册监听函数
+     * @method on
+     * @param {String} type 事件类型
+     * @param {Function} callback 监听回调
+     * @return {Object} { meetingId }
+     */
+    on(type, callback) {
+        console.log(type);
+        this.eventListeningPool[type] = callback;
+        if (type == "getMicrophoneVolume") {
+            // 获取麦克风音量
+            this.GetMicrophoneVolume();
+        }
+    }
 }
 
 export default GSRTC;
