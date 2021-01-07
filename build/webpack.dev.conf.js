@@ -52,10 +52,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             poll: config.dev.poll,
         },
 
-        https: {
-            key: fs.readFileSync(path.join(__dirname, './cert/privatekey.pem')),
-            cert: fs.readFileSync(path.join(__dirname, './cert/certificate.pem'))
-        }
+        // dev时是否打开https
+        // https: {
+        //     key: fs.readFileSync(path.join(__dirname, './cert/privatekey.pem')),
+        //     cert: fs.readFileSync(path.join(__dirname, './cert/certificate.pem'))
+        // }
     },
     plugins: [
         new webpack.ProvidePlugin({

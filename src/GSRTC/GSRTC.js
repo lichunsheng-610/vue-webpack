@@ -28,13 +28,21 @@
 import './adapter-latest';
 import myWebsocket from './myWebsocket';
 
+let conf = {
+    iceTransportPolicy: "all",
+    // sdpSemantics:""
+}
+let rtcPeerConnection = new RTCPeerConnection(conf);
+
 // GSRTC对象
 class GSRTC {
-    constructor(options) {
+    constructor(userInfo, notify) {
+        this.sequence = 1;
         this.eventListeningPool = {};
-
-        // this._websocket = new myWebsocket("ws://123.207.136.134:9010/ajaxchattest");
-        // this._websocket.open();
+        this.userInfo = userInfo;
+        this.websocketNotify = notify;
+        // this._websocketDGW = new myWebsocket("ws://192.168.55.116:45002/");
+        // this._websocketDGW.open();
     }
 
     /**
@@ -53,10 +61,20 @@ class GSRTC {
      */
 
     Uninit() {
-        this._websocket = null;
-        this.cameraId = null;
-        this.microphoneId = null;
+        this._websocketDGW.close();
+        this._websocketDGW = null;
+
+        this.cameraId = "";
+        this.microphoneId = "";
+        this.userInfo = {};
         this.eventListeningPool = {};
+        this.websocketNotify = null;
+        this.sequence = 1;
+        this.meetingId = "";
+        this.sourceId = "";
+
+        rtcPeerConnection.close();
+        rtcPeerConnection = null;
     }
 
     /**
@@ -75,17 +93,25 @@ class GSRTC {
 
     Login(LoginParam) {
         return new Promise((resolve, reject) => {
-            console.log(LoginParam);
-            console.log("LoginLoginLoginLoginLogin");
-            // this._websocket.send({
-            //     'token': '888',
-            //     'content': '123'
-            // }).then(ret => {
-            //     console.log("login");
-            //     resolve(ret);
-            // }, err => {
-            //     reject(err);
-            // });
+            // console.log(LoginParam);
+            console.log("Login start");
+            this._websocketDGW = new myWebsocket(`ws://${LoginParam.serverIp}:${LoginParam.serverPort}/rtc?id=${LoginParam.deviceId}`);
+            // this._websocketDGW = new myWebsocket("ws://192.168.55.116:45002/");
+            this._websocketDGW.open(msg => this.onMessageDGW(msg)).then(() => {
+                this._websocketDGW.send(this.getSendMessage("Dev_Login", `{"username": ${LoginParam.username},"passward": ${LoginParam.passward}}`)).then(ret => {
+                    // this._websocketDGW.send({
+                    //     'cmd': 'Dev_Login',
+                    //     'dev_id': LoginParam.deviceId,
+                    //     'sequence': this.sequence++,
+                    //     'cmd_type': 0,
+                    //     'body': `{"username": ${LoginParam.username},"passward": ${LoginParam.passward}}`,
+                    // }).then(ret => {
+                    // console.log("Login resolve");
+                    resolve(ret);
+                }, err => {
+                    reject(err);
+                });
+            });
         });
     }
 
@@ -95,9 +121,27 @@ class GSRTC {
      * @return {Number} GSRTCReturnCode
      */
 
-    Logout() {
-        console.log("Logout");
-        // this._websocket.close();
+    Logout(LogoutParam) {
+        return new Promise((resolve, reject) => {
+            console.log("Logout");
+            if (!this._websocketDGW) {
+                reject("0909090");
+            }
+            this._websocketDGW.send({
+                'cmd': 'Dev_Logout',
+                'dev_id': LogoutParam.deviceId,
+                'sequence': this.sequence++,
+                'cmd_type': 0,
+                'body': `{"username": ${LogoutParam.username},"passward": ${LogoutParam.passward}}`,
+            }).then(ret => {
+                console.log("Logout resolve");
+                this._websocketDGW.close();
+                this._websocketDGW = null;
+                resolve(ret);
+            }, err => {
+                reject(err);
+            });
+        });
     }
 
     /**
@@ -112,7 +156,20 @@ class GSRTC {
      * @return {Number} GSRTCReturnCode
      */
 
-    EnterMeeting(meetingId, mediaDirect) {}
+    EnterMeeting(meetingId, mediaDirect) {
+        return new Promise((resolve, reject) => {
+            console.log("EnterMeeting");
+            if (!this._websocketDGW) {
+                reject("0909090");
+            }
+            this._websocketDGW.send(this.getSendMessage("Meeting_Enter", `{"meeting_id": ${meetingId}}`)).then(ret => {
+                console.log("EnterMeeting resolve");
+                resolve(ret);
+            }, err => {
+                reject(err);
+            });
+        });
+    }
 
     /**
      * 离开会议，signaling向服务端发出离开会议的申请报文
@@ -355,7 +412,12 @@ class GSRTC {
      * @return {Object} { meetingId, meetingName }
      */
 
-    OnInvitation(meetingId, meetingName) {}
+    OnInvitation(meetingId, meetingName) {
+        // console.log("OnInvitation");
+        // console.log(meetingId);
+        // console.log(meetingName);
+        this.meetingId = meetingId;
+    }
 
     /**
      * 收到会议剔除信令的处理函数
@@ -466,13 +528,245 @@ class GSRTC {
      * @return {Object} { meetingId }
      */
     on(type, callback) {
-        console.log(type);
+        // console.log(type);
         this.eventListeningPool[type] = callback;
         if (type == "getMicrophoneVolume") {
             // 获取麦克风音量
             this.GetMicrophoneVolume();
         }
     }
+
+    /**
+     * 用户移除注册监听函数
+     * @method off
+     * @param {String} type 事件类型，如不填，则移除全部事件监听
+     * @param {Function} callback 可移除指定监听回调
+     * @return {Object} { meetingId }
+     */
+    off(type, callback) {
+        console.log(this.eventListeningPool);
+    }
+
+    /**
+     * websocket onMessageDGW 信息回调
+     * @method onMessageDGW
+     * @param {String} msg 回调消息
+     * @return {Object} { meetingId }
+     */
+    onMessageDGW(msg) {
+        this.websocketNotify && this.websocketNotify(msg);
+        console.log("websocket onMessageDGW 信息回调");
+        console.log(msg);
+        // if (msg.cmd_type == 2) { // DGW主动向RTC发送的通知类信息
+        this.eventListeningPool[msg.cmd] && this.eventListeningPool[msg.cmd](msg);
+        switch (msg.cmd) {
+            case "Meeting_Invitation":
+                // 被邀请参加会议
+                this.OnInvitation(msg.body.meeting_id, msg.body.meeting_name);
+                break;
+            case "Stream_Invite":
+                this.sourceId = msg.body.source_id;
+                let url = msg.body.source_id;
+                console.log("Stream_Invite", url);
+                // DGW向rtc设备发出的invite消息，rtc收到后需要与ss建立ws链接
+                this._websocketSS = new myWebsocket("ws://192.168.55.116:46001/rtc?id=100003&mode=0");
+                this._websocketSS = new myWebsocket(url);
+                this._websocketSS.open(msg => this.onMessageSS(msg)).then(() => {
+                    console.log("与ss建立ws链接");
+                    // this._websocketSS.send({
+                    //     'cmd': 'cready',
+                    //     'sid': msg.sid,
+                    //     'body': `{"device_id":${this.userInfo.deviceId}, "source_id":${this.sourceId}, "meeting_id":${this.meetingId}, "mode": 0, "role": 1}`,
+                    // }).then(ret => {
+                    //     console.log(ret);
+                    // });
+                    this._websocketDGW.send(this.getSendMessage("Stream_Invite", `{"result":0, "msg":"success", "expand":""}`, 1)).then(ret => {
+                        console.log("主动Stream_Invite");
+                        console.log(ret);
+                    });
+                });
+                break;
+            default:
+                break;
+        }
+        // }
+    }
+
+    /**
+     * websocket onMessageSS 信息回调
+     * @method onMessageSS
+     * @param {String} msg 回调消息
+     * @return {Object} { meetingId }
+     */
+    onMessageSS(msg) {
+        // this.websocketNotify && this.websocketNotify(msg);
+        console.log("websocket onMessageSS 信息回调");
+        console.log(msg);
+        // let conf = {
+        //     iceTransportPolicy: "all",
+        //     // sdpSemantics:""
+        // }
+        // let rtcPeerConnection = new RTCPeerConnection(conf);
+        let iceCandidateArr = [];
+
+        // if (msg.cmd_type == 2) { // DGW主动向RTC发送的通知类信息
+        switch (msg.cmd) {
+            case "sready":
+                console.log("sready");
+                let obj = {
+                    'cmd': 'cready',
+                    'sid': msg.sid,
+                    'body': `{"device_id":${this.userInfo.deviceId}, "source_id":"${this.sourceId}", "meeting_id":${this.meetingId}, "mode": 0, "role": 0}`,
+                };
+                console.log(obj);
+                this._websocketSS.send(obj).then(ret => {
+                    console.log("creadythen");
+                    console.log(ret);
+                });
+                break;
+            case "sdp":
+                let sid = msg.sid;
+
+                try {
+                    navigator.mediaDevices.getUserMedia({
+                        video: true
+                    }).then((stream) => {
+                        let that = this;
+                        let localMediaStream = stream;
+                        let localVideo = document.getElementById("localVideo");
+                        localVideo.srcObject = localMediaStream;
+                        localVideo.play();
+
+
+                        rtcPeerConnection.onicecandidate = function (event) {
+                            if (event.candidate) {
+                                console.log("发送啊啊啊啊 ice candidate");
+                                // console.log(event);
+                                let iceCandidateObj = {
+                                    'cmd': 'candidate',
+                                    'sid': sid,
+                                    'body': `{"candidate":"${event.candidate.candidate}", "sdpMLineIndex":${event.candidate.sdpMLineIndex}, "sdpMid":"${event.candidate.sdpMid}"}`,
+                                };
+                                console.log(iceCandidateObj);
+                                that._websocketSS.send(iceCandidateObj).then(ret => {});
+                                iceCandidateArr.push(iceCandidateObj);
+                            }
+                        };
+
+                        rtcPeerConnection.ontrack = function (event) {
+                            let remoteMediaStream = event.streams[0];
+                            console.log("ontrack");
+                            console.log(event);
+                            // let remoteVideo = document.getElementById("remoteVideo");
+                            // remoteVideo.srcObject = remoteMediaStream;
+                            // remoteVideo.play();
+                        };
+
+                        for (const track of localMediaStream.getTracks()) {
+                            console.log("本地liu");
+                            console.log(track);
+                            console.log(localMediaStream);
+                            rtcPeerConnection.addTrack(track, localMediaStream);
+                        }
+
+                        // 拿到服务器发过来的offer
+                        // console.log(msg.body.sdp);
+                        // console.log(JSON.stringify(msg.body.sdp));
+                        // console.log(msg.body.sdp.replace(/[\r]/g, "\\r").replace(/[\n]/g, "\\n"));
+                        let offer = {
+                            sdp: msg.body.sdp,
+                            type: "offer"
+                        }
+                        let offerOptions = {
+                            // iceRestart: true,
+                            offerToReceiveAudio: false, //true,由于没有麦克风，所有如果请求音频，会报错，不过不会影响视频流播放
+                            offerToReceiveVideo: true
+                        };
+
+                        // 设置服务器发过来的sdp
+                        rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(offer)).then(() => {
+                            console.log(offer);
+                            console.log(rtcPeerConnection.remoteDescription);
+                            console.log("setRemoteDescription 完毕");
+                            // 创建answer
+                            rtcPeerConnection.createAnswer(offerOptions).then((sessionDescription) => {
+                                console.log(sessionDescription);
+
+                                // 设置本地创建的spd
+                                rtcPeerConnection.setLocalDescription(sessionDescription).then(console.log("setLocalDescription 完毕"));
+                                console.log("000000000000000");
+                                let sdpObj = {
+                                    'cmd': 'sdp',
+                                    'sid': msg.sid,
+                                    'body': `{"type":"answer", "sdp":"${sessionDescription.sdp.replace(/[\r]/g, "\\r").replace(/[\n]/g, "\\n")}"}`,
+                                };
+                                console.log(sdpObj);
+                                this._websocketSS.send(sdpObj).then(ret => {
+                                    console.log("sdpthen");
+                                    console.log(ret);
+                                });
+                                console.log("1111111111");
+
+                            }).catch(() => {
+                                console.log("setLocalAndAnswer error");
+                            });
+                        });
+                    });
+                } catch (e) {
+                    console.log('>>>>>> createPeerConnection() Failed to create PeerConnection, exception: ' + e.message);
+                    alert('Cannot create RTCPeerConnection object.');
+                    return;
+                }
+                break;
+            case "candidate":
+                let candidateMessage = msg.body;
+                console.log("-------------------------------------------------------------");
+                console.log(candidateMessage);
+                let rtcIceCandidate = new RTCIceCandidate({
+                    sdpMid: candidateMessage.sdpMid,
+                    sdpMLineIndex: candidateMessage.sdpMLineIndex,
+                    candidate: candidateMessage.candidate
+                });
+                console.log(rtcPeerConnection.localDescription)
+                console.log(rtcPeerConnection.remoteDescription)
+                rtcPeerConnection.addIceCandidate(rtcIceCandidate).then(console.log("addIceCandidate 完毕"));
+                setInterval(() => { 
+                    console.log(rtcPeerConnection.iceConnectionState);
+                }, 1000);
+                
+                // iceCandidateArr.forEach(element => {
+                //     this._websocketSS.send(element).then(ret => {});
+                // });
+                break;
+            default:
+                break;
+        }
+        // }
+    }
+
+    /**
+     * websocket send 信息回调
+     * @method getSendMessage
+     * @param {String} cmd 报文类型
+     * @param {String} body 发送的消息体
+     * @return {Object} { meetingId }
+     */
+    getSendMessage(cmd, body, type = 0) {
+        let obj = {
+            'cmd': cmd,
+            'dev_id': this.userInfo.deviceId,
+            'sequence': this.sequence++,
+            'cmd_type': type,
+            'body': body,
+        };
+        // console.log("getSendMessage");
+        // console.log(obj);
+        return obj;
+    }
+}
+
+function error(error) {
+    console.log(error);
 }
 
 export default GSRTC;

@@ -10,7 +10,7 @@ class myWebsocket {
         this.promisePool = {};
     }
 
-    open() {
+    open(notify) {
         return new Promise((resolve, reject) => {
             if (typeof this._websocket === 'undefined') {
                 this._websocket = new WebSocket(this.url);
@@ -27,6 +27,7 @@ class myWebsocket {
             }
             this._websocket.onclose = (e) => {
                 console.log("onclose");
+                console.log(e);
                 if (!this.closeConfig.closing) {
                     console.log("重连");
                 }
@@ -35,14 +36,22 @@ class myWebsocket {
                 this._websocket = undefined;
             }
             this._websocket.onmessage = (e) => {
-                console.log("onmessage");
-                let txt = this.getNum(e.data, "{", "}");
-                let data = JSON.parse(`{${txt}}`);
-                console.log(data);
-                let key = data.token;
+                // console.log("onmessage");
+                // console.log(e);
+                let data = JSON.parse(e.data);
+                data.body = JSON.parse(data.body);
+                // console.log(data);
+                let key = data.cmd;
                 let req = this.promisePool[key];
-                req.resolve(e);
-                delete this.promisePool[key];
+                if (req) {
+                    // promisePool存在该对象，即证明是主动send的。回调需要回到send的then里面去
+                    req.resolve(data);
+                    delete this.promisePool[key];
+                }
+                // console.log(data);
+                // console.log(notify);
+                // 所有onmessage都回调出去
+                notify(data);
             }
         });
     }
@@ -54,26 +63,13 @@ class myWebsocket {
 
     send(msg) {
         return new Promise((resolve, reject) => {
-            this.promisePool[msg.token] = {
+            this.promisePool[msg.cmd] = {
                 msg,
                 resolve,
                 reject,
             }
-            // let content = JSON.stringify(msg);
             this._websocket.send(JSON.stringify(msg));
         });
-    }
-
-    getNum(str, firstStr, secondStr) {
-        if (str == "" || str == null || str == undefined) { // "",null,undefined
-            return "";
-        }
-        if (str.indexOf(firstStr) < 0) {
-            return "";
-        }
-        var subFirstStr = str.substring(str.indexOf(firstStr) + firstStr.length, str.length);
-        var subSecondStr = subFirstStr.substring(0, subFirstStr.indexOf(secondStr));
-        return subSecondStr;
     }
 }
 
